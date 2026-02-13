@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Quiz</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #ffe6f0;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+.page { display: none; }
+.active { display: block; }
+
+button {
+  padding: 12px 20px;
+  margin: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background: #ff4da6;
+  color: white;
+}
+
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 90%;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.photo-grid img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* floating hearts */
+.heart {
+  position: fixed;
+  bottom: -10px;
+  color: #ff4da6;
+  animation: float 6s linear infinite;
+}
+
+@keyframes float {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-100vh); opacity: 0; }
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MUSIC -->
+<audio autoplay loop>
+  <source src="erika.mp3" type="audio/mp3">
+</audio>
+
+<canvas id="confetti"></canvas>
+
+<!-- OPTIONAL PASSWORD PAGE -->
+<div class="page active" id="lock">
+  <h2>Enter secret password 💌</h2>
+  <input type="password" id="pass">
+  <button onclick="unlock()">Enter</button>
+</div>
+
+<!-- PAGE 1 -->
+<div class="page" id="page1">
+  <h2>This is 18+ only. Are you sure you're in the right age to proceed?</h2>
+  <label><input type="checkbox" id="ageCheck"> I confirm</label><br>
+  <button onclick="goToPage2()">Proceed</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="page2">
+  <h2>How well do you know your boyfriend?</h2>
+
+  <p>1. What is his favorite color?</p>
+  <input type="text" id="q1">
+  <button onclick="checkQ1()">Submit</button>
+
+  <p>2. What is his favorite food?</p>
+  <button onclick="checkQ2('A')">Lasagna</button>
+  <button onclick="checkQ2('B')">You</button>
+  <button onclick="checkQ2('C')">Adobo</button>
+  <button onclick="checkQ2('D')">Ramen</button>
+
+  <p>3. Who would you exchange your boyfriend for?</p>
+  <button onclick="checkQ3('A')">Mark Zuckerberg</button>
+  <button onclick="checkQ3('B')">Wala syempre</button>
+  <button onclick="checkQ3('C')">Santa Claus</button>
+  <button onclick="checkQ3('D')">Mga Bisaya</button>
+
+  <p>4. How much do you love your boyfriend?</p>
+  <input type="range" min="1" max="10" value="5" id="loveMeter">
+  <button onclick="checkQ4()">Submit</button>
+
+  <p>5. Would you be my valentine bebe ko?</p>
+  <button onclick="goToPage3()">YES ❤️</button>
+  <button id="noBtn">No</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="page3">
+  <h2>Happy Valentine's Day ❤️</h2>
+  <p id="letter"></p>
+
+  <div class="photo-grid">
+    <img src="photo1.png">
+    <img src="photo2.jpg">
+    <img src="photo3.jpg">
+    <img src="photo4.JPEG">
+    <img src="photo5.jpg">
+    <img src="photo6.jpg">
+    <img src="photo7.jpg">
+    <img src="photo8.PNG">
+    <img src="photo9.jpg">
+    <img src="photo10.JPG">
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+/* PASSWORD */
+function unlock(){
+  if(pass.value==="01/27/23") switchPage("page1");
+  else alert("Wrong password!");
+}
+
+/* floating hearts */
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=Math.random()*20+15+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},500);
+
+/* modal */
+function showModal(content) {
+  modalContent.innerHTML = content + '<br><button onclick="closeModal()">Close</button>';
+  modal.style.display = "flex";
+}
+function closeModal() { modal.style.display = "none"; }
+
+/* pages */
+function switchPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function goToPage2() {
+  if (!ageCheck.checked) alert("Check the box first!");
+  else switchPage("page2");
+}
+
+/* typing letter */
+const text=`Happy Valentine's Day, bebiii! ❤️ Gusto ko lang sanang magpasalamat sa mga 3 years na masaya at puno ng tawanan, kahit minsan may mga stupid na arguments tayo. Pero, sa kabila ng lahat ng yun, masaya ako dahil alam kong kahit gaano pa tayo minsan magkaiba ng opinion, at kahit gaano pa kabilis mag-init ng ulo mo saken, at the end of the day, nagiging okay pa rin tayo kase napaka mapagpasensya kong tao. Yun lang yung mahalaga—tayo pa rin. Thank you for being my source of happiness and for always being there for me, through thick and thin. Hindi ko kayang i-explain lahat ng pasasalamat ko, pero sana alam mo na mahal na mahal kita Kahit lagi mo kong inaaway. I also want to say sorry kung wala akong gaanong maibibigay na gift this year. Medyo wala lang budget bebe kase alam mo naman mga school shits, so far eto lang muna mabibigay ko sayo for valentines as my token of love(wow token tangina bisakol). I hope alam mo how special you are to me bebe ko. Looking forward to more years of love, happiness, and even the stupid arguments that always bring us closer in the end. Mahal na mahal kita, bebetlog ko. 💕`;
+let i=0;
+function typeLetter(){
+  if(i<text.length){
+    letter.innerHTML+=text.charAt(i);
+    i++;
+    setTimeout(typeLetter,25);
+  }
+}
+
+/* confetti */
+const canvas=document.getElementById("confetti");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let confetti=[];
+function boom(){
+  for(let i=0;i<150;i++){
+    confetti.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2});
+  }
+  animate();
+}
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confetti.forEach(c=>{
+    ctx.beginPath();
+    ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
+    ctx.fillStyle="pink";
+    ctx.fill();
+    c.y+=2;
+    if(c.y>canvas.height) c.y=0;
+  });
+  requestAnimationFrame(animate);
+}
+
+/* YES button */
+function goToPage3(){
+  switchPage("page3");
+  boom();
+  typeLetter();
+}
+
+/* quiz logic (yours unchanged) */
+function checkQ1(){
+  let ans=q1.value.toLowerCase();
+  ans==="black"?showModal("Nadali mo beybeh ugh ugh"):showModal("tangina mo male!!!");
+}
+function checkQ2(ans){
+  ans==="B"?showModal("OMG you got it cuh mwa mwa"):showModal("Wrong answer my kneegaw 😭");
+}
+function checkQ3(ans){
+  ans==="B"?showModal('<img src="a.gif">'):showModal("tangina mo bisakol!!!");
+}
+function checkQ4(){
+  let v=loveMeter.value;
+  if(v<=7) showModal('<img src="gif1.gif">');
+  else if(v<=9) showModal('<img src="gif2.gif">');
+  else showModal('<img src="gif3.gif">');
+}
+
+/* running NO */
+noBtn.onmouseover=()=>{
+  noBtn.style.position="absolute";
+  noBtn.style.top=Math.random()*window.innerHeight+"px";
+  noBtn.style.left=Math.random()*window.innerWidth+"px";
+};
+</script>
+
+</body>
+</html>
