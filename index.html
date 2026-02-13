@@ -42,7 +42,21 @@ button {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  max-width: 90%;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 🔥 FIX: GIF auto scale */
+.modal img {
+  max-width: 90vw;
+  max-height: 70vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 .photo-grid {
@@ -79,28 +93,24 @@ canvas {
 
 <body>
 
-<!-- MUSIC (no autoplay anymore) -->
 <audio id="bgm" loop>
   <source src="erika.mp3" type="audio/mp3">
 </audio>
 
 <canvas id="confetti"></canvas>
 
-<!-- PASSWORD -->
 <div class="page active" id="lock">
   <h2>Enter secret password 💌</h2>
   <input type="password" id="pass">
   <button onclick="unlock()">Enter</button>
 </div>
 
-<!-- PAGE 1 -->
 <div class="page" id="page1">
   <h2>This is 18+ only. Are you sure you're in the right age to proceed?</h2>
   <label><input type="checkbox" id="ageCheck"> I confirm</label><br>
   <button onclick="goToPage2()">Proceed</button>
 </div>
 
-<!-- PAGE 2 -->
 <div class="page" id="page2">
   <h2>How well do you know your boyfriend?</h2>
 
@@ -129,7 +139,6 @@ canvas {
   <button id="noBtn">No</button>
 </div>
 
-<!-- PAGE 3 -->
 <div class="page" id="page3">
   <h2>Happy Valentine's Day ❤️</h2>
   <p id="letter"></p>
@@ -148,15 +157,13 @@ canvas {
   </div>
 </div>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content" id="modalContent"></div>
 </div>
 
 <script>
-/* ===== MUSIC ENGINE ===== */
-const music = document.getElementById("bgm");
-music.volume = 0;
+const music=document.getElementById("bgm");
+music.volume=0;
 
 function startMusic(){
   music.play().catch(()=>{});
@@ -165,27 +172,25 @@ function startMusic(){
 }
 
 function fadeInMusic(){
-  let v = 0;
-  const fade = setInterval(()=>{
-    if(v >= 1){
-      clearInterval(fade);
-    } else {
-      v += 0.02;
-      music.volume = v;
+  let v=0;
+  const fade=setInterval(()=>{
+    if(v>=1) clearInterval(fade);
+    else{
+      v+=0.02;
+      music.volume=v;
     }
-  }, 120);
+  },120);
 }
 
 function heartbeatBass(){
   setInterval(()=>{
-    music.volume = Math.min(1, music.volume + 0.15);
+    music.volume=Math.min(1,music.volume+0.15);
     setTimeout(()=>{
-      music.volume = Math.max(0.6, music.volume - 0.15);
+      music.volume=Math.max(0.6,music.volume-0.15);
     },120);
-  }, 900);
+  },900);
 }
 
-/* PASSWORD */
 function unlock(){
   if(pass.value==="01/27/23"){
     startMusic();
@@ -193,7 +198,6 @@ function unlock(){
   } else alert("Wrong password!");
 }
 
-/* floating hearts */
 setInterval(()=>{
   let h=document.createElement("div");
   h.className="heart";
@@ -204,14 +208,12 @@ setInterval(()=>{
   setTimeout(()=>h.remove(),6000);
 },500);
 
-/* modal */
 function showModal(content){
-  modalContent.innerHTML = content + '<br><button onclick="closeModal()">Close</button>';
-  modal.style.display = "flex";
+  modalContent.innerHTML=content+'<br><button onclick="closeModal()">Close</button>';
+  modal.style.display="flex";
 }
-function closeModal(){ modal.style.display = "none"; }
+function closeModal(){modal.style.display="none";}
 
-/* pages */
 function switchPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
@@ -222,8 +224,7 @@ function goToPage2(){
   else switchPage("page2");
 }
 
-/* typing letter */
-const text=`Happy Valentine's Day, bebiii! ❤️ Gusto ko lang sanang magpasalamat sa mga 3 years na masaya at puno ng tawanan...`;
+const text=`Happy Valentine's Day, bebiii! ❤️ ...`;
 let i=0;
 function typeLetter(){
   if(i<text.length){
@@ -233,7 +234,6 @@ function typeLetter(){
   }
 }
 
-/* confetti */
 const canvas=document.getElementById("confetti");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
@@ -258,20 +258,18 @@ function animate(){
   requestAnimationFrame(animate);
 }
 
-/* YES */
 function goToPage3(){
   switchPage("page3");
   boom();
   typeLetter();
 }
 
-/* quiz */
 function checkQ1(){
   let ans=q1.value.toLowerCase();
   ans==="black"?showModal("Nadali mo beybeh ugh ugh"):showModal("tangina mo male!!!");
 }
 function checkQ2(ans){
-  ans==="B"?showModal("OMG you got it cuh mwa mwa"):showModal("Wrong answer 😭");
+  ans==="B"?showModal("OMG you got it cuh mwa mwa"):showModal("Wrong 😭");
 }
 function checkQ3(ans){
   ans==="B"?showModal('<img src="a.gif">'):showModal("tangina mo bisakol!!!");
@@ -283,7 +281,6 @@ function checkQ4(){
   else showModal('<img src="gif3.gif">');
 }
 
-/* running NO */
 noBtn.onmouseover=()=>{
   noBtn.style.position="absolute";
   noBtn.style.top=Math.random()*window.innerHeight+"px";
