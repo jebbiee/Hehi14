@@ -57,7 +57,6 @@ button {
   border-radius: 10px;
 }
 
-/* floating hearts */
 .heart {
   position: fixed;
   bottom: -10px;
@@ -80,14 +79,14 @@ canvas {
 
 <body>
 
-<!-- MUSIC -->
-<audio autoplay loop>
+<!-- MUSIC (no autoplay anymore) -->
+<audio id="bgm" loop>
   <source src="erika.mp3" type="audio/mp3">
 </audio>
 
 <canvas id="confetti"></canvas>
 
-<!-- OPTIONAL PASSWORD PAGE -->
+<!-- PASSWORD -->
 <div class="page active" id="lock">
   <h2>Enter secret password 💌</h2>
   <input type="password" id="pass">
@@ -155,10 +154,43 @@ canvas {
 </div>
 
 <script>
+/* ===== MUSIC ENGINE ===== */
+const music = document.getElementById("bgm");
+music.volume = 0;
+
+function startMusic(){
+  music.play().catch(()=>{});
+  fadeInMusic();
+  heartbeatBass();
+}
+
+function fadeInMusic(){
+  let v = 0;
+  const fade = setInterval(()=>{
+    if(v >= 1){
+      clearInterval(fade);
+    } else {
+      v += 0.02;
+      music.volume = v;
+    }
+  }, 120);
+}
+
+function heartbeatBass(){
+  setInterval(()=>{
+    music.volume = Math.min(1, music.volume + 0.15);
+    setTimeout(()=>{
+      music.volume = Math.max(0.6, music.volume - 0.15);
+    },120);
+  }, 900);
+}
+
 /* PASSWORD */
 function unlock(){
-  if(pass.value==="01/27/23") switchPage("page1");
-  else alert("Wrong password!");
+  if(pass.value==="01/27/23"){
+    startMusic();
+    switchPage("page1");
+  } else alert("Wrong password!");
 }
 
 /* floating hearts */
@@ -173,25 +205,25 @@ setInterval(()=>{
 },500);
 
 /* modal */
-function showModal(content) {
+function showModal(content){
   modalContent.innerHTML = content + '<br><button onclick="closeModal()">Close</button>';
   modal.style.display = "flex";
 }
-function closeModal() { modal.style.display = "none"; }
+function closeModal(){ modal.style.display = "none"; }
 
 /* pages */
-function switchPage(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+function switchPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-function goToPage2() {
-  if (!ageCheck.checked) alert("Check the box first!");
+function goToPage2(){
+  if(!ageCheck.checked) alert("Check the box first!");
   else switchPage("page2");
 }
 
 /* typing letter */
-const text=`Happy Valentine's Day, bebiii! ❤️ Gusto ko lang sanang magpasalamat sa mga 3 years na masaya at puno ng tawanan, kahit minsan may mga stupid na arguments tayo. Pero, sa kabila ng lahat ng yun, masaya ako dahil alam kong kahit gaano pa tayo minsan magkaiba ng opinion, at kahit gaano pa kabilis mag-init ng ulo mo saken, at the end of the day, nagiging okay pa rin tayo kase napaka mapagpasensya kong tao. Yun lang yung mahalaga—tayo pa rin. Thank you for being my source of happiness and for always being there for me, through thick and thin. Hindi ko kayang i-explain lahat ng pasasalamat ko, pero sana alam mo na mahal na mahal kita Kahit lagi mo kong inaaway. I also want to say sorry kung wala akong gaanong maibibigay na gift this year. Medyo wala lang budget bebe kase alam mo naman mga school shits, so far eto lang muna mabibigay ko sayo for valentines as my token of love(wow token tangina bisakol). I hope alam mo how special you are to me bebe ko. Looking forward to more years of love, happiness, and even the stupid arguments that always bring us closer in the end. Mahal na mahal kita, bebetlog ko. 💕`;
+const text=`Happy Valentine's Day, bebiii! ❤️ Gusto ko lang sanang magpasalamat sa mga 3 years na masaya at puno ng tawanan...`;
 let i=0;
 function typeLetter(){
   if(i<text.length){
@@ -226,20 +258,20 @@ function animate(){
   requestAnimationFrame(animate);
 }
 
-/* YES button */
+/* YES */
 function goToPage3(){
   switchPage("page3");
   boom();
   typeLetter();
 }
 
-/* quiz logic (yours unchanged) */
+/* quiz */
 function checkQ1(){
   let ans=q1.value.toLowerCase();
   ans==="black"?showModal("Nadali mo beybeh ugh ugh"):showModal("tangina mo male!!!");
 }
 function checkQ2(ans){
-  ans==="B"?showModal("OMG you got it cuh mwa mwa"):showModal("Wrong answer my kneegaw 😭");
+  ans==="B"?showModal("OMG you got it cuh mwa mwa"):showModal("Wrong answer 😭");
 }
 function checkQ3(ans){
   ans==="B"?showModal('<img src="a.gif">'):showModal("tangina mo bisakol!!!");
